@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import * as Components from "./AnimatedStyle";
 import PageNav from "../Components/PageNav.jsx";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Contexts/FakeAuthContext";
-import { showToast } from "./showToast.jsx";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -14,13 +12,12 @@ import {
 } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { setDoc, doc } from "firebase/firestore";
-
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "./showToast.jsx";
 
 function App() {
   const [signIn, toggle] = useState(true);
-
   const navigate = useNavigate();
 
   const [signInEmail, setSignInEmail] = useState("");
@@ -33,7 +30,7 @@ function App() {
     e.preventDefault();
     if (!signUpName || !signUpEmail || !signUpPassword) {
       showToast("error", "All fields are required for sign-up.");
-      
+      return;
     }
 
     try {
@@ -47,21 +44,16 @@ function App() {
         name: signUpName,
         password: signUpPassword,
       });
-
       showToast("success", "User registered successfully!");
- setTimeout(() => {
-   navigate("/app/cities");
- }, 1800);
-      
+      setTimeout(() => {
+        navigate("/app/cities");
+      }, 1800);
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        showToast(
-          "error",
-          "Email already in use. Please try a different email."
-        );
-      } else {
-        showToast("error", "Error during sign-up: " + error.message);
-      }
+      const errorMessage =
+        error.code === "auth/email-already-in-use"
+          ? "Email already in use. Please try a different email."
+          : `Error during sign-up: ${error.message}`;
+      showToast("error", errorMessage);
     }
   };
 
@@ -70,79 +62,33 @@ function App() {
     try {
       await signInWithEmailAndPassword(auth, signInEmail, signInPassword);
       showToast("success", "User logged in successfully!");
-
       setTimeout(() => {
         navigate("/app/cities");
       }, 2000);
     } catch (error) {
-      if (error.code === "auth/user-not-found") {
-        showToast("error", "No user found with this email. Please sign up.");
-      } else if (error.code === "auth/wrong-password") {
-        showToast("error", "Incorrect password. Please try again.");
-      } else {
-        showToast("error", "Error during sign-in: ");
-      }
+      const errorMessage =
+        error.code === "auth/user-not-found"
+          ? "No user found with this email. Please sign up."
+          : error.code === "auth/wrong-password"
+          ? "Incorrect password. Please try again."
+          : `Error during sign-in: ${error.message}`;
+      showToast("error", errorMessage);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
+  const handleProviderSignIn = async (provider, successMessage) => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      showToast("success", "User logged in successfully!");
+      await signInWithPopup(auth, provider);
+      showToast("success", successMessage);
       setTimeout(() => {
         navigate("/app/cities");
       }, 1000);
     } catch (error) {
-      if (error.code === "auth/popup-closed-by-user") {
-        showToast("success", "The popup was closed before completing sign-in");
-      } else {
-        toast.error("Error during Google sign-in: ", {
-          position: "bottom-center",
-        });
-      }
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      toast.success("Facebook sign-in successful", {
-        position: "top-center",
-      });
-      navigate("/app/cities");
-    } catch (error) {
-      if (error.code === "auth/popup-closed-by-user") {
-        toast.error("The popup was closed before completing sign-in.", {
-          position: "bottom-center",
-        });
-      } else {
-        toast.error("Error during Facebook sign-in: " + error.message, {
-          position: "bottom-center",
-        });
-      }
-    }
-  };
-
-  const handleGitHubSignIn = async () => {
-    const provider = new GithubAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      toast.success("GitHub sign-in successful", {
-        position: "top-center",
-      });
-      navigate("/app/cities");
-    } catch (error) {
-      if (error.code === "auth/popup-closed-by-user") {
-        toast.error("The popup was closed before completing sign-in.", {
-          position: "bottom-center",
-        });
-      } else {
-        toast.error("Error during GitHub sign-in: " + error.message, {
-          position: "bottom-center",
-        });
-      }
+      const errorMessage =
+        error.code === "auth/popup-closed-by-user"
+          ? "The popup was closed before completing sign-in."
+          : `Error during sign-in: ${error.message}`;
+      showToast("error", errorMessage);
     }
   };
 
@@ -156,22 +102,41 @@ function App() {
           <Components.SignUpContainer $signinIn={signIn}>
             <Components.Form>
               <Components.Title>Create Account</Components.Title>
-
               <Components.SocialIcons>
-                <Components.Icon href="#" onClick={handleGoogleSignIn}>
+                <Components.Icon
+                  href="#"
+                  onClick={() =>
+                    handleProviderSignIn(
+                      new GoogleAuthProvider(),
+                      "Google sign-in successful!"
+                    )
+                  }
+                >
                   <i className="fab fa-google-plus-g"></i>
                 </Components.Icon>
-                <Components.Icon href="#" onClick={handleFacebookSignIn}>
+                <Components.Icon
+                  href="#"
+                  onClick={() =>
+                    handleProviderSignIn(
+                      new FacebookAuthProvider(),
+                      "Facebook sign-in successful!"
+                    )
+                  }
+                >
                   <i className="fab fa-facebook-f"></i>
                 </Components.Icon>
-                <Components.Icon href="#" onClick={handleGitHubSignIn}>
+                <Components.Icon
+                  href="#"
+                  onClick={() =>
+                    handleProviderSignIn(
+                      new GithubAuthProvider(),
+                      "GitHub sign-in successful!"
+                    )
+                  }
+                >
                   <i className="fab fa-github"></i>
                 </Components.Icon>
-                <Components.Icon href="#">
-                  <i className="fab fa-linkedin-in"></i>
-                </Components.Icon>
               </Components.SocialIcons>
-
               <Components.Input
                 type="text"
                 placeholder="Name"
@@ -225,7 +190,8 @@ function App() {
               <Components.LeftOverlayPanel $signinIn={signIn}>
                 <Components.Title>Welcome Back!</Components.Title>
                 <Components.Paragraph>
-                  To keep connected with us please login with your personal info
+                  To keep connected with us, please login with your personal
+                  info.
                 </Components.Paragraph>
                 <Components.GhostButton onClick={() => toggle(true)}>
                   Sign In
@@ -235,7 +201,7 @@ function App() {
               <Components.RightOverlayPanel $signinIn={signIn}>
                 <Components.Title>Hello, Friend!</Components.Title>
                 <Components.Paragraph>
-                  Enter your personal details and start your journey with us
+                  Enter your personal details and start your journey with us.
                 </Components.Paragraph>
                 <Components.GhostButton onClick={() => toggle(false)}>
                   Sign Up
@@ -245,7 +211,7 @@ function App() {
           </Components.OverlayContainer>
         </Components.Container>
       </Components.EntireContentLogin>
-      <ToastContainer richColors />
+      <ToastContainer />
     </main>
   );
 }
