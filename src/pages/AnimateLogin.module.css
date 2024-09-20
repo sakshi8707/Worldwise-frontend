@@ -1,0 +1,232 @@
+/* icons */
+.socialIcons {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  color: red;
+}
+
+.icon {
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px;
+  width: 40px;
+  height: 40px;
+  color: #ccc;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.icon:hover {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+.icon i {
+  font-size: 20px;
+}
+
+/* containers */
+.container {
+  background-color: var(--color-dark--1);
+  border-radius: 10px;
+  box-shadow: 0px 14px 28px 20px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 678px;
+  max-width: 100%;
+  min-height: 400px;
+}
+
+.signUpContainer,
+.signInContainer {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+  left: 0;
+  width: 50%;
+}
+
+.signUpContainer {
+  opacity: 1;
+  z-index: 5;
+  transform: translateX(0);
+}
+
+.signInContainer {
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(100%);
+}
+
+.signUpContainer.signInIn {
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(100%);
+}
+
+.signInContainer.signInIn {
+  opacity: 1;
+  z-index: 5;
+  transform: translateX(0);
+}
+
+/* navbar */
+.navBar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 10;
+}
+
+/* main container */
+.entireContentLogin {
+  margin: 2.5rem;
+  padding: 2.5rem 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 50px);
+  background-color: var(--color-dark--1);
+  position: relative;
+}
+
+/* form */
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+.title {
+  font-weight: bold;
+  margin: 0;
+}
+
+.input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.button {
+  border-radius: 20px;
+  border: 1px solid var(--color-brand--2);
+  background-color: var(--color-brand--2);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button:focus {
+  outline: none;
+}
+
+.ghostButton {
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
+.anchor {
+  color: #ffffff;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
+}
+
+/* overlay */
+.overlayContainer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out, border-radius 0.6s ease-in-out;
+  z-index: 100;
+  border-radius: 0 150px 100px 0;
+}
+
+.overlayContainer.signInIn {
+  border-radius: 150px 0 0 100px;
+  transform: translateX(-100%);
+}
+
+.overlay {
+  background: linear-gradient(to right, var(--color-brand--2), var(--color-brand--2));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay.signInIn {
+  transform: translateX(50%);
+}
+
+.overlayPanel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.leftOverlayPanel {
+  transform: translateX(-20%);
+}
+
+.rightOverlayPanel {
+  right: 0;
+  transform: translateX(0);
+}
+
+.leftOverlayPanel.signInIn {
+  transform: translateX(0);
+}
+
+.rightOverlayPanel.signInIn {
+  transform: translateX(20%);
+}
+
+.paragraph {
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
+}
