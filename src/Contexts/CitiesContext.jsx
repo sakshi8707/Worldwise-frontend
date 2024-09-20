@@ -6,7 +6,7 @@ import {
   useCallback,
 } from "react";
 
-const BASE_URL = "https://backend-4t3d.onrender.com";
+const BASE_URL = "https://server-xpku.onrender.com";
 
 const CitiesContext = createContext();
 
